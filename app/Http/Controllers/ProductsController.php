@@ -20,34 +20,88 @@ class ProductsController extends ApiController
     {
     	$products = Product::with('activePrice', 'prices')->get();
         if(count($products) === 0) {
-            return $this->respondWithError('Nie znaleziono żadnych produktów');
+            return $this->respondWithError('Nie znaleziono żadnych produktów.');
         }
         return $this->respond(
         	$this->productsTransformer->transormCollection($products->toArray())
 		);
     }
 
-     // API - store a product
+    // API  - get the all existing products
+    public function getSpecified(Product $product)
+    {
+    	if (!$product) {
+    		return $this->respondWithError('Nie znaleziono danego produktu.');
+    	}
+        return $this->respond(
+        	$this->productsTransformer->transform($product)
+		);
+    }
+
+    // API - store a product
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'description' => 'required'
-        ]);
+    	$prodValidator = \Validator::make(
+    		$request->all(), [
+    			'name' => 'required', 
+    			'description' => 'required',
+    			'prices.*.amount' => 'required',
+    			'prices.*.active' => 'required'
+    		]
+    	);
+    	if( $prodValidator->fails() ) {
+    		return $this->respondWithError('Dane nie przeszły walidacji...');
+    	}
         
         $product = Product::create([ 
 			'name' => request('name'),
         	'description' => request('description'),
          ]);
 
-   //      Price::create([ 
-			// 'product_id' => $product->id,
-   //      	'amount' => request('price'),
+        foreach ($request['prices'] as $price) {
+        	Price::create([
+        		'product_id' => $product->id,
+        		'amount' => $price['amount'],
+        		'active' => $price['active']
+        	]);
+        }
+
+        return $this->respondCreated();
+    }
+
+
+    // API - update a product
+    public function update(Request $request) 
+    {
+    	$prodValidator = \Validator::make(
+    		$request->all(), [
+    			'name' => 'required', 
+    			'description' => 'required',
+    			'prices.*.amount' => 'required',
+    			'prices.*.active' => 'required'
+    		]
+    	);
+    	if( $prodValidator->fails() ) {
+    		return $this->respondWithError('Dane nie przeszły walidacji...');
+    	}
+        
+   //      $product = Product::create([ 
+			// 'name' => request('name'),
+   //      	'description' => request('description'),
    //       ]);
 
-        return $this->respond($request);
+        // foreach ($request['prices'] as $price) {
+        // 	Price::create([
+        // 		'product_id' => $product->id,
+        // 		'amount' => $price['amount'],
+        // 		'active' => $price['active']
+        // 	]);
+        // }
 
+        return $this->respond($request);
     }
+
+
 
     // API - delete product
     public function destroy(Product $product)

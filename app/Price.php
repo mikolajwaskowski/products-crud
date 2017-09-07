@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Price extends Model
 {
     // permissions
-    protected $fillable = ['amount', 'product_id'];
+    protected $fillable = ['amount', 'product_id', 'active'];
 
     // Price belongs to Product relationship
     public function product() 

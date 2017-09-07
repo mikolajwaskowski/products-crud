@@ -17,14 +17,16 @@ window.Vue = require('vue');
 
 Vue.component('list', require('./components/List.vue'));
 Vue.component('add', require('./components/Add.vue'));
+Vue.component('edit', require('./components/Edit.vue'));
 
 const app = new Vue({
     el: '#app',
     data: {
-    	currentView: 'add'
+    	currentView: 'list',
+    	productId: null
     },
     mounted() {
-
+    	
     },
     methods: {
     	add() {
@@ -32,6 +34,10 @@ const app = new Vue({
     	},
     	back() {
     		this.currentView = 'list';
+    	},
+    	edit(id) {
+    		this.productId = id;
+    		this.currentView = 'edit';
     	}
     }
 });

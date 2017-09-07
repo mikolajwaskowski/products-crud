@@ -2,10 +2,10 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3"> 
-                <button @click="add" class="btn btn-success btn-block btn-lg mb-4">Dodaj</button>
+                <button @click="add" class="btn btn-success btn-block btn-lg mb-4"><i class="fa fa-plus"></i>  Dodaj</button>
             </div>
             <div class="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                <div v-if="list.length === 0" class="m-5 text-center">{{ status }}</div>
+                <div v-if="list.length === 0" class="m-5 text-center" v-html="status"></div>
                 <ul v-else class="list-group">
                     <li class="list-group-item flex-column align-items-start p-4" v-for="(product, index) in list">
                         <div class="d-flex w-100 justify-content-between">
@@ -21,8 +21,8 @@
                         </div>                        
                         <p>{{ product.description }}</p>
                         <div class="align-self-end ml-auto">
-                            <button @click="editProduct(product.id)" class="btn btn-outline-warning btn-sm">Edytuj</button>
-                            <button @click="deleteProduct(product.id)" class="btn btn-outline-danger btn-sm ml-2">Usuń</button>
+                            <button @click="editProduct(product.id)" class="btn btn-outline-warning btn-sm"><i class="fa fa-edit"></i>  Edytuj</button>
+                            <button @click="deleteProduct(product.id, $event)" class="btn btn-outline-danger btn-sm ml-2"><i class="fa fa-trash"></i>  Usuń</button>
                         </div>
                     </li>
                 </ul>
@@ -33,17 +33,11 @@
 
 <script>
     export default {
-        props: ['add'],
+        props: ['add', 'edit'],
         data() {
             return {
                 status: 'Wczytywanie produków...',
-                list: [],
-                product: {
-                    id: '',
-                    name: '',
-                    descruption: '',
-                    active_price: null
-                }
+                list: []
             };
         },
         created() {
@@ -51,37 +45,46 @@
         },
         methods: {
             fetchProducts() {
+                // empty old array
+                this.list = [];
+
+                // get data
                 axios.get('api/products')
                     .then((res) => {
                         if(res.data.error) {
-                            this.status = res.data.error.message;
+                            this.status = '<i class="fa fa-5x fa-inbox text-muted"></i><br /> ' + res.data.error.message + ' Dodaj pierwszy produkt za pomocą przycisku "Dodaj" powyżej.';
                         } else {
                             this.list = res.data;
                         }
                     })
                     .catch((err) => {
-                        this.status = 'Wystąpił błąd podczas wczytywania :('
-
+                        this.status = '<i class="fa fa-5x fa-frown-o text-muted"></i><br /> Wystąpił błąd podczas wczytywania.'
                     });
             },
  
             createProduct() {
                 axios.put('api/products', this.product)
                     .then((res) => {
-                        console.log(res);
                         this.fetchProducts();
                     })
                     .catch((err) => console.error(err));
             },
  
-            deleteProduct(id) {
+            deleteProduct(id, event) {
+                // show status
+                event.target.disabled = true;
+                event.target.innerText = 'Usuwanie...';
+
+                // delete item
                 axios.delete('api/products/' + id)
                     .then((res) => {
-                        console.log(res);
                         this.fetchProducts();
                     })
                     .catch((err) => console.error(err));
             },
+            editProduct(id) {
+                this.edit(id)
+            }
         }
     }
 </script>

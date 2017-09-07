@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                <h1 class="mt-3">Dodaj produkt:</h1>
+                <h1 class="mt-3">Edytuj produkt:</h1>
                 <form class="my-4">
                     <div class="form-group" :class="{ 'has-danger': errors.name }">
                         <input v-model="product.name" v-on:keydown="validate" type="text" class="form-control form-control-lg" :class="{ 'form-control-danger': errors.name }" placeholder="Nazwa produktu">
@@ -54,7 +54,7 @@
                         <div v-if="errors.length" v-for="error in errors" class="alert alert-danger text-center">
                             <div><i class="fa fa-arrow-right"></i> {{ error }}</div>
                         </div>
-                        <button @click.prevent="storeProduct" class="btn btn-success btn-lg btn-block mt-3 btn-send"><i class="fa fa-plus"></i> Dodaj produkt</button>
+                        <button @click.prevent="storeProduct" class="btn btn-success btn-lg btn-block mt-3 btn-send"><i class="fa fa-edit"></i> Edytuj produkt</button>
                 </form>
             </div>
              <div class="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
@@ -66,7 +66,7 @@
 
 <script>
     export default {
-        props: ['back'],
+        props: ['back', 'productid'],
         data() {
             return {
                 product: {
@@ -80,7 +80,28 @@
                 formSubmitted: false
             };
         },
+        created() {
+            this.getProduct();
+        },
         methods: {
+            setActivePrice() {
+                // TODO
+            },
+            getProduct() {
+                // get data
+                axios.get('api/products/' + this.productid)
+                    .then((res) => {
+                        if(res.data.error) {
+                            this.status = '<i class="fa fa-5x fa-exclamation-circle text-danger"></i><br /> ' + res.data.error.message;
+                        } else {
+                            this.product = res.data;
+                        }
+                    })
+                    .catch((err) => {
+                        this.status = '<i class="fa fa-5x fa-frown-o"></i><br /> Wystąpił błąd podczas wczytywania danych.'
+                    });
+                // setActivePrice();
+            },
             validate() {
                 if(this.formSubmitted) {
                     this.errors = [];

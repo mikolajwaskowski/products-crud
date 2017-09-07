@@ -16,6 +16,7 @@
 
         <!-- Styles -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
     </head>
     <body>
@@ -29,13 +30,13 @@
     </header>
 
     <main id="app" class="pt-5 pb-5">
-        <component :is="currentView" :back="back" :add="add"></component>
+        <component :is="currentView" :back="back" :add="add" :edit="edit" :productid="productId"></component>
     </main>
 
     <footer>
         <div class="container">
-            <p class="text-center">
-                Made witch ❤ by Mikołaj Waśkowski
+            <p class="text-center text-muted">
+                Made witch <i class="fa fa-heart-o"></i>  by Mikołaj Waśkowski
             </p>
         </div>
     </footer>

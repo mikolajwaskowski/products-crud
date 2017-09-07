@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                <h1 class="mt-3">Edytuj produkt:</h1>
+                <h2 class="mt-3">Edytuj produkt:</h2>
                 <form class="my-4">
                     <div class="form-group" :class="{ 'has-danger': errors.name }">
                         <input v-model="product.name" v-on:keydown="validate" type="text" class="form-control form-control-lg" :class="{ 'form-control-danger': errors.name }" placeholder="Nazwa produktu">
@@ -54,7 +54,7 @@
                         <div v-if="errors.length" v-for="error in errors" class="alert alert-danger text-center">
                             <div><i class="fa fa-arrow-right"></i> {{ error }}</div>
                         </div>
-                        <button @click.prevent="storeProduct" class="btn btn-success btn-lg btn-block mt-3 btn-send"><i class="fa fa-edit"></i> Edytuj produkt</button>
+                        <button @click.prevent="updateProduct" class="btn btn-success btn-lg btn-block mt-3 btn-send"><i class="fa fa-edit"></i> Edytuj produkt</button>
                 </form>
             </div>
              <div class="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
@@ -95,6 +95,13 @@
                             this.status = '<i class="fa fa-5x fa-exclamation-circle text-danger"></i><br /> ' + res.data.error.message;
                         } else {
                             this.product = res.data;
+                            let activePrice;
+                            this.product.prices.map( function(price, index) {
+                                if ( price.active === 1 ) {
+                                    activePrice = index
+                                }
+                            });
+                            this.activeIndex = activePrice;
                         }
                     })
                     .catch((err) => {
@@ -135,7 +142,7 @@
                     return passed;
                 }
             },
-            storeProduct(event) {
+            updateProduct(event) {
                 this.formSubmitted = true;
                 let passedValidation = this.validate();
 
@@ -145,10 +152,14 @@
                     event.target.disabled = true; // make button 'loading'
 
                     // set active price
-                    this.product.prices[ this.activeIndex ].active = 1;
+                    let activePrice = this.activeIndex;
+                    this.product.prices.map( function(price, index) {
+                        if ( index === activePrice ) price.active = 1;
+                        else price.active = 0;
+                    });
 
                     // send request
-                    axios.post('api/products', this.product )
+                    axios.put('api/products', this.product )
                         .then((res) => {
                             if(res.data.error) {
                                 this.status = '<i class="fa fa-5x fa-frown-o text-danger"></i><br />' + res.data.error.message;

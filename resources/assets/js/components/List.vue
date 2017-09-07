@@ -7,15 +7,12 @@
             <div class="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
                 <div v-if="list.length === 0" class="m-5 text-center" v-html="status"></div>
                 <ul v-else class="list-group">
-                    <li class="list-group-item flex-column align-items-start p-4" v-for="(product, index) in list">
+                    <li v-for="(product, index) in list" class="list-group-item flex-column align-items-start p-4">
                         <div class="d-flex w-100 justify-content-between">
                             <h3 class="mb-1">{{ product.name }}</h3>
-                            <div v-if="product.active_price < 0">
-                                Produkt niedostępny
-                            </div>
-                            <h4 v-else>
-                                <span class="badge badge-primary badge-pill">
-                                    {{ product.active_price }} zł
+                            <h4 v-for="price in product.prices" v-if="price.active">
+                                <span v-if="price.active" class="badge badge-primary badge-pill">
+                                    {{ price.amount }} zł
                                 </span>
                             </h4>
                         </div>                        

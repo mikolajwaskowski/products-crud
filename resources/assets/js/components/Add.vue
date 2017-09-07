@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                <h1 class="mt-3">Dodaj produkt:</h1>
+                <h2 class="mt-3">Dodaj produkt:</h2>
                 <form class="my-4">
                     <div class="form-group" :class="{ 'has-danger': errors.name }">
                         <input v-model="product.name" v-on:keydown="validate" type="text" class="form-control form-control-lg" :class="{ 'form-control-danger': errors.name }" placeholder="Nazwa produktu">

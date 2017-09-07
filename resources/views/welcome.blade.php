@@ -13,6 +13,7 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Pacifico&amp;subset=latin-ext" rel="stylesheet">
 
         <!-- Styles -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -21,19 +22,15 @@
     </head>
     <body>
 
-    <header>
-        <div class="container pt-4">
-            <nav class="navbar navbar-light bg-faded rounded text-center">
-                <span class="navbar-brand">Best-in-test products</span>
-            </nav>
-        </div>
+    <header class="pt-5 text-center">
+        <h1 style="font-family: 'Pacifico', cursive; font-size: 50px;">Best-in-test <br /> products</h1>
     </header>
 
-    <main id="app" class="pt-5 pb-5">
+    <main id="app" class="my-5">
         <component :is="currentView" :back="back" :add="add" :edit="edit" :productid="productId"></component>
     </main>
 
-    <footer>
+    <footer class="mb-5">
         <div class="container">
             <p class="text-center text-muted">
                 Made witch <i class="fa fa-heart-o"></i>  by Mikołaj Waśkowski

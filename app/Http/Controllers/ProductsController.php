@@ -84,21 +84,28 @@ class ProductsController extends ApiController
     	if( $prodValidator->fails() ) {
     		return $this->respondWithError('Dane nie przeszły walidacji...');
     	}
-        
-   //      $product = Product::create([ 
-			// 'name' => request('name'),
-   //      	'description' => request('description'),
-   //       ]);
 
-        // foreach ($request['prices'] as $price) {
-        // 	Price::create([
-        // 		'product_id' => $product->id,
-        // 		'amount' => $price['amount'],
-        // 		'active' => $price['active']
-        // 	]);
-        // }
+    	// update product data
+    	$update = Product::where('id', $request->id)
+          	->update([ 'name' => $request->name, 'description' => $request->description ]);
+         if(!$update) {
+         	return $this->respondWithError('Wystąpił błąd podczas edycji produktu.');
+         }
 
-        return $this->respond($request);
+         // find that product
+        $product = Product::findOrFail($request->id);
+        // delete all prices first - prevents from store unused prices for products
+        // only visible Vue prices have to be stored
+        $product->prices()->delete();
+        foreach ($request['prices'] as $price) {
+        	Price::create([
+        		'product_id' => $product->id,
+        		'amount' => $price['amount'],
+        		'active' => $price['active']
+        	]);
+        }
+
+        return $this->respondUpdated();
     }
 
 
